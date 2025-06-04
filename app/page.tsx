@@ -3,6 +3,7 @@ import { Role } from "@/src/components/Auth/schema/signupSchema";
 import { Dashboard } from "@/src/components/Dashboard/Dashboard";
 import { ProfessorManagement } from "@/src/components/ProfessorManagement/ProfessorManagement";
 import { RoomManagement } from "@/src/components/RoomsManagement/RoomManagement";
+import { TimeTable } from "@/src/components/Timetable/Timetable";
 import { UEManagement } from "@/src/components/UEManagement/UEManagement";
 import { Header } from "@/src/components/utils/Header";
 import { Sidebar } from "@/src/components/utils/Sidebar";
@@ -36,7 +37,7 @@ export default function Home() {
       case "ue":
         return <UEManagement />;
       case "schedule":
-        return <div>emploi du temps</div>;
+        return <TimeTable userRole={userRole} />;
       case "availability":
         return <div>availability</div>;
       case "generator":
