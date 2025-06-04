@@ -15,6 +15,7 @@ import { authClient } from "@/src/lib/auth-client";
 import { LogOut, Menu, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ModeToggle } from "./ModeToggle";
 
 interface HeaderProps {
   Role: Role;
@@ -86,8 +87,8 @@ export function Header({ Role, toggleSidebar }: HeaderProps) {
           <Badge className={getRoleColor(Role)}>{getRoleLabel(Role)}</Badge>
         </div>
       </div>
-
       <div className="flex items-center gap-4">
+        <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

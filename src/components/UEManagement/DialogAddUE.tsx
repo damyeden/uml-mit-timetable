@@ -11,17 +11,26 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
+import { cn } from "@/src/lib/utils";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-export default function DialogAddUE() {
+interface DialogAddUEProps {
+  className?: string;
+}
+
+export default function DialogAddUE({ className }: DialogAddUEProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleAddUE = () => {};
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button onClick={handleAddUE}>
+        <Button
+          onClick={handleAddUE}
+          className={cn(`${className}`)}
+          variant="outline"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Ajouter une UE
         </Button>

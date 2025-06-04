@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 
 import { Role } from "@/src/components/Auth/schema/signupSchema";
+import DialogAddProfessor from "../ProfessorManagement/DialogAddProfessor";
+import DialogAddRoom from "../RoomsManagement/DialogAddRoom";
 
 export function Dashboard({ userRole }: { userRole: Role }) {
   const stats = [
@@ -133,14 +135,8 @@ export function Dashboard({ userRole }: { userRole: Role }) {
           <CardContent className="space-y-3">
             {userRole === "ADMIN" && (
               <>
-                <Button className="w-full justify-start" variant="outline">
-                  <Building2 className="mr-2 h-4 w-4" />
-                  Ajouter une salle
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Users className="mr-2 h-4 w-4" />
-                  Ajouter un professeur
-                </Button>
+                <DialogAddRoom className="w-full justify-start" />
+                <DialogAddProfessor className="w-full justify-start" />
                 <Button className="w-full justify-start" variant="outline">
                   <Calendar className="mr-2 h-4 w-4" />
                   Générer l&apos;emploi du temps

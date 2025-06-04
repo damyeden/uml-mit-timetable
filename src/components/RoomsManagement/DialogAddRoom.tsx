@@ -11,18 +11,27 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { Plus } from "lucide-react";
+import { cn } from "@/src/lib/utils";
+import { Building2 } from "lucide-react";
 import { useState } from "react";
 
-export default function DialogAddRoom() {
+interface DialogAddRoomProps {
+  className?: string;
+}
+
+export default function DialogAddRoom({ className }: DialogAddRoomProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleAddRoom = () => {};
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button onClick={handleAddRoom}>
-          <Plus className="mr-2 h-4 w-4" />
+        <Button
+          onClick={handleAddRoom}
+          className={cn(`${className}`)}
+          variant="outline"
+        >
+          <Building2 className="mr-2 h-4 w-4" />
           Ajouter une salle
         </Button>
       </DialogTrigger>

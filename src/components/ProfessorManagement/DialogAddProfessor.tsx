@@ -1,20 +1,27 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/src/components/ui/dialog";
 
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { Plus } from "lucide-react";
+import { cn } from "@/src/lib/utils";
+import { Users } from "lucide-react";
 import { useState } from "react";
 
-export default function DialogAddProfessor() {
+interface DialogAddProfessorProps {
+  className?: string;
+}
+
+export default function DialogAddProfessor({
+  className,
+}: DialogAddProfessorProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleAddProfessor = () => {};
@@ -22,8 +29,12 @@ export default function DialogAddProfessor() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button onClick={handleAddProfessor}>
-          <Plus className="mr-2 h-4 w-4" />
+        <Button
+          onClick={handleAddProfessor}
+          className={cn(`${className}`)}
+          variant="outline"
+        >
+          <Users className="mr-2 h-4 w-4" />
           Ajouter un professeur
         </Button>
       </DialogTrigger>
