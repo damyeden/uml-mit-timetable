@@ -1,5 +1,5 @@
 // Remove prisma import from here since this will be used client-side
-import { Salle } from "../Salle";
+import { Salle } from "../Salle/Salle";
 
 export class Mention {
   private mentionId: number;
@@ -49,7 +49,7 @@ export class Mention {
       if (formData.logo) {
         uploadFormData.append("logo", formData.logo);
       }
-
+      
       const response = await fetch("/api/createMention", {
         method: "POST",
         body: uploadFormData, // Use FormData instead of JSON
