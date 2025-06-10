@@ -12,8 +12,10 @@ interface TimeTableFilterProps {
   userRole: Role;
 }
 
+const levels: string[] = ["L1", "L2", "L3", "M1", "M2"];
+
 export default function TimeTableFilter({ userRole }: TimeTableFilterProps) {
-  const [selectedView, setSelectedView] = useState("week");
+  const [selectedLevel, setSelectedLevel] = useState("L1");
   const [selectedProfessor, setSelectedProfessor] = useState("all");
 
   return (
@@ -32,13 +34,16 @@ export default function TimeTableFilter({ userRole }: TimeTableFilterProps) {
         </Select>
       )}
       {
-        <Select value={selectedView} onValueChange={setSelectedView}>
+        <Select value={selectedLevel} onValueChange={setSelectedLevel}>
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="week">Semaine</SelectItem>
-            <SelectItem value="month">Mois</SelectItem>
+            {levels.map((level, id) => (
+              <SelectItem key={id} value={level}>
+                {level.toUpperCase()}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       }
