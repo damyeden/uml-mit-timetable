@@ -20,16 +20,18 @@ enum Role {
 }
 
 model User {
-  id            String    @id
+  id            String   @id
   name          String
   email         String
   emailVerified Boolean
   image         String?
-  role          Role      @default(ADMIN)
+  role          Role     @default(ADMIN)
   createdAt     DateTime
   updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+
+  person   Person?
+  sessions Session[]
+  accounts Account[]
 
   @@unique([email])
   @@map("user")
@@ -78,4 +80,160 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Person {
+  personId  String  @id @default(cuid())
+  lastname  String
+  firstname String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  professor Professor?
+  student   Student?
+  admin     Admin?
+
+  @@map("person")
+}
+
+model Professor {
+  professorId String @id @default(cuid())
+
+  person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
+  personId String @unique
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("professor")
+}
+
+model Admin {
+  adminId String @id @default(cuid())
+
+  person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
+  personId String @unique
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("admin")
+}
+
+model Student {
+  studentId String @id @default(cuid())
+
+  person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
+  personId String @unique
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("student")
+}
+
+model Faculty {
+  facultyId Int       @id @default(autoincrement())
+  name      String
+  mention   Mention[]
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("faculty")
+}
+
+model Mention {
+  mentionId       Int     @id @default(autoincrement())
+  nom             String
+  annee_fondation Int?
+  fondateur       String?
+  logo            String?
+
+  faculty   Faculty @relation(fields: [facultyId], references: [facultyId], onDelete: Cascade)
+  facultyId Int
+
+  salles   MentionSalle[]
+  parcours Parcours[]
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("mention")
+}
+
+model Parcours {
+  parcoursId Int    @id @default(autoincrement())
+  name       String
+
+  lft Int
+  rgt Int
+
+  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
+  mentionId Int
+
+  @@index([lft])
+  @@index([rgt])
+  @@map("parcours")
+}
+
+model UE {
+  ueId Int    @id @default(autoincrement())
+  nom  String
+
+  ecue Ecue[]
+
+  @@map("ue")
+}
+
+model Ecue {
+  ecueId  Int    @id @default(autoincrement())
+  nom     String
+  credits Int
+
+  ue   UE  @relation(fields: [ueId], references: [ueId], onDelete: Cascade)
+  ueId Int
+
+  @@map("ecue")
+}
+
+model MentionSalle {
+  salle     Salle   @relation(fields: [salleId], references: [salleId], onDelete: Cascade)
+  salleId   Int
+  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
+  mentionId Int
+
+  assignedAt DateTime @default(now())
+
+  @@id([salleId, mentionId])
+  @@map("mentionSalle")
+}
+
+model Salle {
+  salleId       Int @id @default(autoincrement())
+  nombre_places Int
+
+  latitude   Float
+  longitude  Float
+  equipement Equipements[]
+  mentions   MentionSalle[]
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("salle")
+}
+
+model Equipements {
+  equipementId   Int    @id @default(autoincrement())
+  equipementType String
+
+  salle   Salle @relation(fields: [salleId], references: [salleId], onDelete: Cascade)
+  salleId Int
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("equipements")
 }

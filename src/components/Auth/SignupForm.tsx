@@ -54,6 +54,7 @@ const SignupForm = () => {
   const onSubmit = async (data: SignUpFormValues) => {
     console.log("data", data);
     form.reset();
+
     await authClient.signUp.email(
       {
         email: data.email,

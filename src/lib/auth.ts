@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { resend } from "./email";
+import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { resend } from "./email";
+import { Person } from "./models/Person";
 
 const prisma = new PrismaClient();
 
@@ -40,5 +42,66 @@ export const auth = betterAuth({
       }
     },
   },
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      const newSession = ctx.context.newSession;
+      if (!newSession) return;
+
+      const { user } = newSession;
+
+      const person = await Person.getPersonFromUserId(user.id);
+
+      console.log(person);
+    }),
+  },
+
   plugins: [nextCookies()],
+
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (created) => {
+          try {
+            const user = await prisma.user.findUnique({
+              where: {
+                id: created.id,
+              },
+              select: {
+                role: true,
+              },
+            });
+
+            const person = await prisma.person.create({
+              data: {
+                lastname: created.name,
+                user: { connect: { id: created.id } },
+              },
+            });
+
+            if (user?.role === "ADMIN") {
+              await prisma.admin.create({
+                data: {
+                  person: { connect: { personId: person.personId } },
+                },
+              });
+            } else if (user?.role === "PROFESSOR") {
+              await prisma.professor.create({
+                data: {
+                  person: { connect: { personId: person.personId } },
+                },
+              });
+            } else if (user?.role === "STUDENT") {
+              await prisma.student.create({
+                data: {
+                  person: { connect: { personId: person.personId } },
+                },
+              });
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        },
+      },
+    },
+  },
 });
