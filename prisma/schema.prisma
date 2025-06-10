@@ -201,10 +201,10 @@ model Salle {
   nom      String
   capacite Int
 
-  latitude   Float?
-  longitude  Float?
-  equipement Equipement[]
-  mentions   MentionSalle[]
+  latitude    Float?
+  longitude   Float?
+  equipements Equipement[]
+  mentions    MentionSalle[]
 
   createdAt DateTime?
   updatedAt DateTime?

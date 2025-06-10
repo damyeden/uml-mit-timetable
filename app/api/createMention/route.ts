@@ -14,10 +14,16 @@ export async function POST(request: NextRequest) {
     const responsable = formData.get("responsable") as string;
 
     if (!logo) {
-      return NextResponse.json(
-        { error: "No logo file provided" },
-        { status: 400 }
-      );
+      const newMention = await prisma.mention.create({
+        data: {
+          nom,
+          responsable,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+      });
     }
 
     // Convert File to buffer
@@ -48,13 +54,12 @@ export async function POST(request: NextRequest) {
         logo: `/uploads/${filename}`,
       },
     });
-
+    
     return NextResponse.json({
       success: true,
       filename,
       path: `/uploads/${filename}`,
     });
-    
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to save image" },

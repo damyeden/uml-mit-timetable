@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { Mention } from "@/src/lib/models/Mention/Mention";
+import { Mention } from "@/src/lib/models/Mention";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "../ui/badge";

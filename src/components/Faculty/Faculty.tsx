@@ -1,10 +1,10 @@
 "use server";
-import { MentionService } from "@/src/lib/models/Mention/MentionService";
+import { Mention } from "@/src/lib/models/Mention";
 import DialogAddMention from "../Mention/DialogAddMention";
 import MentionCard from "../Mention/MentionCard";
 
 export default async function Faculty() {
-  const mentions = await MentionService.getAllMentions();
+  const mentions = await Mention.getAllMentions();
 
   if (mentions.length === 0) {
     return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Loader2 } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,10 +25,22 @@ import {
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
 import { useToast } from "@/src/hooks/use-toast";
-import { addMention } from "./action";
+import { modifyMention } from "./action";
 import { type MentionFormValues, mentionSchema } from "./schema/mentionSchema";
 
-export default function DialogAddMention() {
+interface DialogModifyMentionProps {
+  mentionId: number;
+  nom: string;
+  responsable?: string;
+  logo?: string;
+}
+
+export default function DialogModifyMention({
+  mentionId,
+  nom,
+  responsable,
+  logo,
+}: DialogModifyMentionProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const { toast } = useToast();
@@ -36,8 +48,8 @@ export default function DialogAddMention() {
   const form = useForm<MentionFormValues>({
     resolver: zodResolver(mentionSchema),
     defaultValues: {
-      nom: "",
-      responsable: "",
+      nom: nom || "",
+      responsable: responsable || "",
       logo: undefined,
     },
   });
@@ -53,7 +65,7 @@ export default function DialogAddMention() {
       };
 
       // Logic submit
-      await addMention(formData);
+      await modifyMention(mentionId, formData);
 
       // Show success toast
       toast({
@@ -81,16 +93,15 @@ export default function DialogAddMention() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Building2 className="mr-2 h-4 w-4" />
-          Ajouter mention
+        <Button variant="outline" className="flex items-center">
+          Edit <Edit />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajouter Mention</DialogTitle>
+          <DialogTitle>Modifier Mention</DialogTitle>
           <DialogDescription>
-            Remplissez les informations de la mention. Cliquez sur "Ajouter"
+            Modifiez les informations de la mention. Cliquez sur "Modifier"
             lorsque vous avez terminé.
           </DialogDescription>
         </DialogHeader>
@@ -161,7 +172,7 @@ export default function DialogAddMention() {
                   Veuillez patienter...
                 </>
               ) : (
-                "Ajouter"
+                "Modifier"
               )}
             </Button>
           </form>
