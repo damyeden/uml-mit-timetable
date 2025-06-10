@@ -5,7 +5,7 @@ export class Person {
   lastname: string;
   firstname?: string;
   userId: string;
-
+  
   constructor(
     personId: string,
     lastname: string,

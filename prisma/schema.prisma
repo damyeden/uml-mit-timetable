@@ -133,26 +133,12 @@ model Student {
   @@map("student")
 }
 
-model Faculty {
-  facultyId Int       @id @default(autoincrement())
-  name      String
-  mention   Mention[]
-
-  createdAt DateTime?
-  updatedAt DateTime?
-
-  @@map("faculty")
-}
-
 model Mention {
   mentionId       Int     @id @default(autoincrement())
   nom             String
   annee_fondation Int?
-  fondateur       String?
+  responsable     String?
   logo            String?
-
-  faculty   Faculty @relation(fields: [facultyId], references: [facultyId], onDelete: Cascade)
-  facultyId Int
 
   salles   MentionSalle[]
   parcours Parcours[]
@@ -211,12 +197,13 @@ model MentionSalle {
 }
 
 model Salle {
-  salleId       Int @id @default(autoincrement())
-  nombre_places Int
+  salleId  Int    @id @default(autoincrement())
+  nom      String
+  capacite Int
 
-  latitude   Float
-  longitude  Float
-  equipement Equipements[]
+  latitude   Float?
+  longitude  Float?
+  equipement Equipement[]
   mentions   MentionSalle[]
 
   createdAt DateTime?
@@ -225,7 +212,7 @@ model Salle {
   @@map("salle")
 }
 
-model Equipements {
+model Equipement {
   equipementId   Int    @id @default(autoincrement())
   equipementType String
 

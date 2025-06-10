@@ -1,9 +1,9 @@
 "use client";
 
+import { Role } from "@/src/components/Auth/schema/signupSchema";
 import { Button } from "@/src/components/ui/button";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { cn } from "@/src/lib/utils";
-import { Role } from "@/src/components/Auth/schema/signupSchema";
 import {
   BookOpen,
   Building2,
@@ -15,29 +15,31 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
-  activeView: string;
-  setActiveView: (view: string) => void;
   userRole: Role;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 }
 
-export function Sidebar({
-  activeView,
-  setActiveView,
-  userRole,
-  isOpen,
-  setIsOpen,
-}: SidebarProps) {
-    
+export function Sidebar({ userRole, isOpen, setIsOpen }: SidebarProps) {
+  const pathname = usePathname();
+  const activeView = pathname.split("/")[1] || "dashboard";
+
   const menuItems = [
     {
       id: "dashboard",
       label: "Tableau de bord",
       icon: Home,
       roles: ["ADMIN", "PROFESSOR", "STUDENT"],
+    },
+    {
+      id: "faculty",
+      label: "Faculty",
+      icon: Home,
+      roles: ["ADMIN"],
     },
     {
       id: "rooms",
@@ -109,15 +111,15 @@ export function Sidebar({
             {filteredItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Button
-                  key={item.id}
-                  variant={activeView === item.id ? "secondary" : "ghost"}
-                  className={cn("w-full justify-start", !isOpen && "px-2")}
-                  onClick={() => setActiveView(item.id)}
-                >
-                  <Icon className="h-4 w-4" />
-                  {isOpen && <span className="ml-3">{item.label}</span>}
-                </Button>
+                <Link href={`/${item.id}`} key={item.id}>
+                  <Button
+                    variant={activeView === item.id ? "secondary" : "ghost"}
+                    className={cn("w-full justify-start", !isOpen && "px-2")}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {isOpen && <span className="ml-3">{item.label}</span>}
+                  </Button>
+                </Link>
               );
             })}
           </div>

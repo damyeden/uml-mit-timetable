@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -17,10 +18,23 @@ import {
 } from "lucide-react";
 
 import { Role } from "@/src/components/Auth/schema/signupSchema";
+import { authClient } from "@/src/lib/auth-client";
 import DialogAddProfessor from "../ProfessorManagement/DialogAddProfessor";
 import DialogAddRoom from "../RoomsManagement/DialogAddRoom";
 
-export function Dashboard({ userRole }: { userRole: Role }) {
+export function Dashboard() {
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+  } = authClient.useSession();
+
+  if (isPending) return <div>Loading....</div>;
+
+  if (error) return <div>error</div>;
+
+  const userRole = session?.user.role as Role;
+
   const stats = [
     {
       title: "Salles disponibles",

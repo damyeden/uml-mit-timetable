@@ -17,7 +17,7 @@ type InputFieldProps = {
   name: string;
   label: string;
   placeholder: string;
-  type: "email" | "password" | "text";
+  type: "email" | "password" | "text" | "file";
   icon?: React.ReactNode;
   showPasswordToggle?: boolean;
 };

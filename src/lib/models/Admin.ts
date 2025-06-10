@@ -9,4 +9,3 @@ export class Admin {
     return `Hello, my name is ${this.lastname}`;
   }
 }
-

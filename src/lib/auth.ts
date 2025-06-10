@@ -46,9 +46,7 @@ export const auth = betterAuth({
     after: createAuthMiddleware(async (ctx) => {
       const newSession = ctx.context.newSession;
       if (!newSession) return;
-
       const { user } = newSession;
-
       const person = await Person.getPersonFromUserId(user.id);
 
       console.log(person);

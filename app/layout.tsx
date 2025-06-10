@@ -1,6 +1,7 @@
 import { Toaster } from "@/src/components/ui/toaster";
 import { ThemeProvider } from "@/src/components/utils/theme-provider";
 import type { Metadata } from "next";
+
 // import { Poppins } from "next/font/google";
 import "./globals.css";
 
