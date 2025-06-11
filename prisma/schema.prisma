@@ -1,16 +1,28 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Au {
+  auId Int @id @default(autoincrement())
+
+  au String
+
+  debut DateTime?
+  fin   DateTime?
+
+  debutSemestrePair DateTime?
+  finSemestrePair   DateTime?
+
+  debutSemestreInpair DateTime?
+  finSemestreInpair   DateTime?
+
+  @@map("annnee_universitaire")
 }
 
 enum Role {
@@ -97,18 +109,6 @@ model Person {
   @@map("person")
 }
 
-model Professor {
-  professorId String @id @default(cuid())
-
-  person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
-  personId String @unique
-
-  createdAt DateTime?
-  updatedAt DateTime?
-
-  @@map("professor")
-}
-
 model Admin {
   adminId String @id @default(cuid())
 
@@ -121,18 +121,16 @@ model Admin {
   @@map("admin")
 }
 
-model Student {
-  studentId String @id @default(cuid())
+model Professor {
+  professorId String @id @default(cuid())
 
   person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
   personId String @unique
 
-  inscription Inscription[]
-
   createdAt DateTime?
   updatedAt DateTime?
 
-  @@map("student")
+  @@map("professor")
 }
 
 model Mention {
@@ -189,27 +187,6 @@ model Parcours {
   @@map("parcours")
 }
 
-model UE {
-  ueId Int    @id @default(autoincrement())
-  nom  String
-
-  ecue Ecue[]
-
-  @@map("ue")
-}
-
-model Ecue {
-  ecueId    Int      @id @default(autoincrement())
-  nom       String
-  credits   Int
-  chapitres String[]
-
-  ue   UE  @relation(fields: [ueId], references: [ueId], onDelete: Cascade)
-  ueId Int
-
-  @@map("ecue")
-}
-
 model MentionSalle {
   salle     Salle   @relation(fields: [salleId], references: [salleId], onDelete: Cascade)
   salleId   Int
@@ -223,12 +200,14 @@ model MentionSalle {
 }
 
 model Salle {
-  salleId  Int    @id @default(autoincrement())
+  salleId  Int     @id @default(autoincrement())
   nom      String
   capacite Int
+  photo    String?
 
-  latitude    Float?
-  longitude   Float?
+  latitude  Float?
+  longitude Float?
+
   equipements Equipement[]
   mentions    MentionSalle[]
 
@@ -251,6 +230,20 @@ model Equipement {
   @@map("equipements")
 }
 
+model Student {
+  studentId String @id @default(cuid())
+
+  person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
+  personId String @unique
+
+  inscription Inscription[]
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("student")
+}
+
 model Inscription {
   inscriptionId Int @id @default(autoincrement())
 
@@ -258,4 +251,25 @@ model Inscription {
   studentId String
 
   @@map("inscription")
+}
+
+model UE {
+  ueId Int    @id @default(autoincrement())
+  nom  String
+
+  ecue Ecue[]
+
+  @@map("ue")
+}
+
+model Ecue {
+  ecueId    Int      @id @default(autoincrement())
+  nom       String
+  credits   Int
+  chapitres String[]
+
+  ue   UE  @relation(fields: [ueId], references: [ueId], onDelete: Cascade)
+  ueId Int
+
+  @@map("ecue")
 }
