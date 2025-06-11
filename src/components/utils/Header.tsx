@@ -19,7 +19,7 @@ import { ModeToggle } from "./ModeToggle";
 
 interface HeaderProps {
   Role: Role;
-  toggleSidebar: () => void;
+  toggleSidebar?: () => void;
 }
 
 export function Header({ Role, toggleSidebar }: HeaderProps) {

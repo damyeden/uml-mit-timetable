@@ -1,5 +1,4 @@
 "use client";
-
 import { Role } from "@/src/components/Auth/schema/signupSchema";
 import { Button } from "@/src/components/ui/button";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
@@ -21,62 +20,71 @@ import { usePathname } from "next/navigation";
 interface SidebarProps {
   userRole: Role;
   isOpen: boolean;
+  mentionId: string;
   setIsOpen: (open: boolean) => void;
 }
 
-export function Sidebar({ userRole, isOpen, setIsOpen }: SidebarProps) {
+export function Sidebar({
+  userRole,
+  isOpen,
+  setIsOpen,
+  mentionId,
+}: SidebarProps) {
   const pathname = usePathname();
-  const activeView = pathname.split("/")[1] || "dashboard";
 
   const menuItems = [
     {
-      id: "dashboard",
+      id: `mention/${mentionId}/dashboard`,
       label: "Tableau de bord",
       icon: Home,
-      roles: ["ADMIN", "PROFESSOR", "STUDENT"],
+      roles: ["ADMIN", "PROFESSOR", "STUDENT"] as Role[],
     },
     {
-      id: "faculty",
-      label: "Faculty",
-      icon: Home,
-      roles: ["ADMIN"],
-    },
-    {
-      id: "rooms",
+      id: `mention/${mentionId}/rooms`,
       label: "Gestion des salles",
       icon: Building2,
-      roles: ["ADMIN"],
+      roles: ["ADMIN"] as Role[],
     },
     {
-      id: "professors",
-      label: "Gestion des PROFESSORs",
+      id: `mention/${mentionId}/professor`,
+      label: "Gestion des professeurs",
       icon: Users,
-      roles: ["ADMIN"],
+      roles: ["ADMIN"] as Role[],
     },
     {
-      id: "ue",
+      id: `mention/${mentionId}/ue`,
       label: "Gestion des UE",
       icon: BookOpen,
-      roles: ["ADMIN"],
+      roles: ["ADMIN"] as Role[],
     },
     {
-      id: "schedule",
+      id: `mention/${mentionId}/timetable`,
       label: "Emploi du temps",
       icon: Calendar,
-      roles: ["ADMIN", "PROFESSOR", "STUDENT"],
+      roles: ["ADMIN", "PROFESSOR", "STUDENT"] as Role[],
     },
     {
-      id: "availability",
+      id: `mention/${mentionId}/availability`,
       label: "Disponibilités",
       icon: Clock,
-      roles: ["ADMIN", "PROFESSOR"],
+      roles: ["ADMIN", "PROFESSOR"] as Role[],
     },
-    { id: "generator", label: "Générateur", icon: Zap, roles: ["ADMIN"] },
+    {
+      id: `mention/${mentionId}/generator`,
+      label: "Générateur",
+      icon: Zap,
+      roles: ["ADMIN"] as Role[],
+    },
   ];
 
   const filteredItems = menuItems.filter((item) =>
     item.roles.includes(userRole)
   );
+
+  // Check if current path matches any menu item
+  const isActiveRoute = (itemId: string) => {
+    return pathname === `/${itemId}` || pathname.startsWith(`/${itemId}/`);
+  };
 
   return (
     <div
@@ -110,10 +118,12 @@ export function Sidebar({ userRole, isOpen, setIsOpen }: SidebarProps) {
           <div className="space-y-2">
             {filteredItems.map((item) => {
               const Icon = item.icon;
+              const isActive = isActiveRoute(item.id);
+
               return (
                 <Link href={`/${item.id}`} key={item.id}>
                   <Button
-                    variant={activeView === item.id ? "secondary" : "ghost"}
+                    variant={isActive ? "secondary" : "ghost"}
                     className={cn("w-full justify-start", !isOpen && "px-2")}
                   >
                     <Icon className="h-4 w-4" />

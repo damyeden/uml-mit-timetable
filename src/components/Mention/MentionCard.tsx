@@ -54,7 +54,7 @@ export default function MentionCard({ mention, className }: MentionProps) {
           </div>
         </div>
         <div className="w-full mt-4 flex items-center justify-end space-x-2">
-          <Link href={`/faculty/mention/${mention.getMentionId()}`}>
+          <Link href={`/mention/${mention.getMentionId()}`}>
             <Button size="sm" variant="outline">
               Voir détails
             </Button>
