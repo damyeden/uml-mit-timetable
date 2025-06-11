@@ -33,7 +33,7 @@ export default function DialogDeleteMention({
       // Appel de la fonction de callback avec l'ID de la room
       await deleteMention(Number(mentionId));
 
-      router.push("/faculty");
+      router.push("/");
 
       // Fermer le dialog après suppression
       setIsDialogOpen(false);

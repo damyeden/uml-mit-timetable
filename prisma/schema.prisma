@@ -208,8 +208,8 @@ model Salle {
   latitude  Float?
   longitude Float?
 
-  equipements Equipement[]
-  mentions    MentionSalle[]
+  equipments EquipmentSalle[]
+  mentions   MentionSalle[]
 
   createdAt DateTime?
   updatedAt DateTime?
@@ -217,12 +217,23 @@ model Salle {
   @@map("salle")
 }
 
-model Equipement {
-  equipementId   Int    @id @default(autoincrement())
-  equipementType String
+model EquipmentSalle {
+  equipment   Equipment @relation(fields: [equipmentId], references: [equipmentId], onDelete: Cascade)
+  equipmentId Int
 
   salle   Salle @relation(fields: [salleId], references: [salleId], onDelete: Cascade)
   salleId Int
+
+  assignedAt DateTime @default(now())
+
+  @@id([equipmentId, salleId])
+}
+
+model Equipment {
+  equipmentId   Int    @id @default(autoincrement())
+  equipmentType String
+
+  salles EquipmentSalle[]
 
   createdAt DateTime?
   updatedAt DateTime?

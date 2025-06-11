@@ -11,7 +11,6 @@ import {
 } from "@/src/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Room } from "./RoomManagement";
 
 interface DialogDeleteRoomProps {
   room: Room;
