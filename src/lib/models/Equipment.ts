@@ -1,3 +1,5 @@
+import prisma from "../prisma";
+
 export class Equipment {
   private equipmentId: number;
 
@@ -10,21 +12,46 @@ export class Equipment {
   }
 
   public equipmentType: string;
-  public salleId: number;
-  public createdAt: Date | null;
-  public updateAt: Date | null;
+  public createdAt?: Date | null;
+  public updateAt?: Date | null;
 
   constructor(
     equipmentId: number,
     equipmentType: string,
-    salleId: number,
-    createdAt: Date | null,
-    updateAt: Date | null
+    createdAt?: Date | null,
+    updateAt?: Date | null
   ) {
     this.equipmentId = equipmentId;
     this.equipmentType = equipmentType;
-    this.salleId = salleId;
     this.createdAt = createdAt;
     this.updateAt = updateAt;
+  }
+
+  public static async getAllEquipments(): Promise<Equipment[]> {
+    const equipments = await prisma.equipment.findMany({});
+    return equipments.map(
+      (equipment) =>
+        new Equipment(
+          equipment.equipmentId,
+          equipment.equipmentType,
+          equipment.createdAt ?? undefined,
+          equipment.updatedAt ?? undefined
+        )
+    );
+  }
+
+  public static async save(equipmentType: string): Promise<Equipment> {
+    const equipment = await prisma.equipment.create({
+      data: {
+        equipmentType,
+      },
+    });
+
+    return new Equipment(
+      equipment.equipmentId,
+      equipment.equipmentType,
+      equipment.createdAt ?? null,
+      equipment.updatedAt ?? null
+    );
   }
 }

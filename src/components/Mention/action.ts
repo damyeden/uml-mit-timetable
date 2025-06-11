@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 export async function deleteMention(mentionId: number) {
   try {
     await Mention.deleteMention(mentionId);
-    revalidatePath("/faculty");
+    revalidatePath("/");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
     throw new Error("Impossible de supprimer la mention");
@@ -19,7 +19,7 @@ export async function addMention(formData: {
 }) {
   try {
     await Mention.save(formData);
-    revalidatePath("/faculty");
+    revalidatePath("/");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
     throw new Error("Impossible de supprimer la mention");

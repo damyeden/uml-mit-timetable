@@ -1,6 +1,6 @@
+import { Dashboard } from "@/src/components/Dashboard/Dashboard";
 import DialogDeleteMention from "@/src/components/Mention/DialogDeleteMention";
 import DialogModifyMention from "@/src/components/Mention/DialogModifyMention";
-import { RoomManagement } from "@/src/components/RoomsManagement/RoomManagement";
 import { Badge } from "@/src/components/ui/badge";
 import {
   Card,
@@ -11,15 +11,6 @@ import {
 import { Mention } from "@/src/lib/models/Mention";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
-// Définition de l'interface pour les salles
-interface Salle {
-  id: number;
-  nom: string;
-  capacite: number;
-  latitude?: number;
-  longitude?: number;
-}
 
 interface PageProps {
   params: Promise<{ mentionId: string }>;
@@ -36,8 +27,6 @@ export default async function Page(props: PageProps) {
   }
 
   return (
-
-    
     <div className="container mx-auto p-4 md:p-6">
       <Card className="mb-8">
         <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between pb-2">
@@ -109,56 +98,7 @@ export default async function Page(props: PageProps) {
         </CardContent>
       </Card>
 
-      {/*
-      
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold mb-2">Salles</h2>
-        <Separator className="mb-6" />
-        
-        {(mention.salles?.length ?? 0) === 0 ? (
-          <div className="text-muted-foreground text-center py-8">
-            Aucune salle n'est disponible pour cette mention.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {(mention.salles ?? []).map((salle) => (
-              <Card
-                key={salle.getSalleId()}
-                className="overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">{salle.nom}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Capacité:</span>
-                      <span className="font-medium">
-                        {salle.capacite} personnes
-                      </span>
-                    </div>
-                    {salle.latitude && salle.longitude && (
-                      <div className="mt-2">
-                        <Button variant="outline" size="sm" className="w-full">
-                          Voir sur la carte
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      
-      
-      
-      
-      */}
-
-      <RoomManagement />
+      <Dashboard />
     </div>
   );
 }

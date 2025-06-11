@@ -96,7 +96,7 @@ export class Mention {
       // Save to public/uploads
       const uploadDir = join(process.cwd(), "public", "uploads");
       const filepath = join(uploadDir, filename);
-
+      
       // Ensure directory exists
       const fs = require("fs");
       if (!fs.existsSync(uploadDir)) {
