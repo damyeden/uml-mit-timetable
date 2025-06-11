@@ -127,6 +127,8 @@ model Student {
   person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
   personId String @unique
 
+  inscription Inscription[]
+
   createdAt DateTime?
   updatedAt DateTime?
 
@@ -140,13 +142,37 @@ model Mention {
   responsable     String?
   logo            String?
 
-  salles   MentionSalle[]
-  parcours Parcours[]
+  salles                MentionSalle[]
+  mentionNiveauParcours MentionNiveauParcours[]
 
   createdAt DateTime?
   updatedAt DateTime?
 
   @@map("mention")
+}
+
+model Niveau {
+  niveauId Int    @id @default(autoincrement())
+  intitule String
+
+  mentionNiveauParcours MentionNiveauParcours[]
+}
+
+model MentionNiveauParcours {
+  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
+  mentionId Int     @unique
+
+  niveau   Niveau @relation(fields: [niveauId], references: [niveauId], onDelete: Cascade)
+  niveauId Int    @unique
+
+  parcours   Parcours @relation(fields: [parcoursId], references: [parcoursId], onDelete: Cascade)
+  parcoursId Int      @unique
+
+  @@id([mentionId, parcoursId, niveauId])
+  @@index(mentionId)
+  @@index(parcoursId)
+  @@index(niveauId)
+  @@map("mentionNiveauParcours")
 }
 
 model Parcours {
@@ -156,8 +182,7 @@ model Parcours {
   lft Int
   rgt Int
 
-  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
-  mentionId Int
+  mentionNiveauParcours MentionNiveauParcours[]
 
   @@index([lft])
   @@index([rgt])
@@ -174,9 +199,10 @@ model UE {
 }
 
 model Ecue {
-  ecueId  Int    @id @default(autoincrement())
-  nom     String
-  credits Int
+  ecueId    Int      @id @default(autoincrement())
+  nom       String
+  credits   Int
+  chapitres String[]
 
   ue   UE  @relation(fields: [ueId], references: [ueId], onDelete: Cascade)
   ueId Int
@@ -223,4 +249,13 @@ model Equipement {
   updatedAt DateTime?
 
   @@map("equipements")
+}
+
+model Inscription {
+  inscriptionId Int @id @default(autoincrement())
+
+  student   Student @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
+  studentId String
+
+  @@map("inscription")
 }
