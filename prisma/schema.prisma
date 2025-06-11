@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -21,6 +20,7 @@ model Au {
 
   debutSemestreInpair DateTime?
   finSemestreInpair   DateTime?
+  Inscription         Inscription[]
 
   @@map("annnee_universitaire")
 }
@@ -140,8 +140,8 @@ model Mention {
   responsable     String?
   logo            String?
 
-  salles                MentionSalle[]
-  mentionNiveauParcours MentionNiveauParcours[]
+  salles      MentionSalle[]
+  inscription Inscription[]
 
   createdAt DateTime?
   updatedAt DateTime?
@@ -153,24 +153,7 @@ model Niveau {
   niveauId Int    @id @default(autoincrement())
   intitule String
 
-  mentionNiveauParcours MentionNiveauParcours[]
-}
-
-model MentionNiveauParcours {
-  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
-  mentionId Int     @unique
-
-  niveau   Niveau @relation(fields: [niveauId], references: [niveauId], onDelete: Cascade)
-  niveauId Int    @unique
-
-  parcours   Parcours @relation(fields: [parcoursId], references: [parcoursId], onDelete: Cascade)
-  parcoursId Int      @unique
-
-  @@id([mentionId, parcoursId, niveauId])
-  @@index(mentionId)
-  @@index(parcoursId)
-  @@index(niveauId)
-  @@map("mentionNiveauParcours")
+  inscription Inscription[]
 }
 
 model Parcours {
@@ -180,7 +163,7 @@ model Parcours {
   lft Int
   rgt Int
 
-  mentionNiveauParcours MentionNiveauParcours[]
+  inscription Inscription[]
 
   @@index([lft])
   @@index([rgt])
@@ -250,6 +233,21 @@ model Inscription {
   student   Student @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
   studentId String
 
+  mention   Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
+  mentionId Int     @unique
+
+  niveau   Niveau @relation(fields: [niveauId], references: [niveauId], onDelete: Cascade)
+  niveauId Int    @unique
+
+  parcours   Parcours @relation(fields: [parcoursId], references: [parcoursId], onDelete: Cascade)
+  parcoursId Int      @unique
+
+  au   Au  @relation(fields: [auId], references: [auId], onDelete: Cascade)
+  auId Int
+
+  @@index(mentionId)
+  @@index(parcoursId)
+  @@index(niveauId)
   @@map("inscription")
 }
 
