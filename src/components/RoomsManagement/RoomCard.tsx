@@ -91,7 +91,7 @@ export default function RoomCard({ salle }: RoomCardProps) {
           </p>
           <div className="flex flex-wrap gap-1">
             {salle.equipments?.map((eq, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
+              <Badge key={index} variant="secondary" className="text-xl">
                 {eq.equipmentType}
               </Badge>
             ))}

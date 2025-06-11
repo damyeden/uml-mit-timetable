@@ -7,6 +7,7 @@ export async function addSalle(
     nom: string;
     capacite: number;
     photo: File | null;
+    equipments?: number[] | null;
   },
   mentionId: number
 ) {

@@ -16,8 +16,8 @@ export class Equipment {
   public updateAt?: Date | null;
 
   constructor(
-    equipmentId: number,
-    equipmentType: string,
+    equipmentId: number = 0,
+    equipmentType: string = "",
     createdAt?: Date | null,
     updateAt?: Date | null
   ) {

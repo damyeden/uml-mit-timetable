@@ -54,7 +54,11 @@ export class Salle {
       include: {
         salle: {
           include: {
-            equipments: true,
+            equipments: {
+              include: {
+                equipment: true,
+              },
+            },
           },
         },
       },
@@ -115,13 +119,15 @@ export class Salle {
       nom: string;
       capacite: number;
       photo: File | null;
-      latitude?: number;
-      longitude?: number;
+      equipments?: number[] | null;
     },
     mentionId: number
   ) {
     mentionId = Number(mentionId);
-    const { nom, capacite, photo } = formData;
+    const { nom, capacite, photo, equipments } = formData;
+
+    console.log(equipments);
+
     try {
       if (!photo) {
         const newSalle = await prisma.salle.create({
@@ -130,6 +136,17 @@ export class Salle {
             capacite,
           },
         });
+        if (equipments) {
+          equipments.forEach(
+            async (e) =>
+              await prisma.equipmentSalle.create({
+                data: {
+                  equipmentId: e,
+                  salleId: newSalle.salleId,
+                },
+              })
+          );
+        }
         await prisma.mentionSalle.create({
           data: {
             mentionId,
@@ -170,6 +187,17 @@ export class Salle {
           photo: `/uploads/${filename}`,
         },
       });
+      if (equipments) {
+        equipments.forEach(
+          async (e) =>
+            await prisma.equipmentSalle.create({
+              data: {
+                equipmentId: e,
+                salleId: newSalle.salleId,
+              },
+            })
+        );
+      }
 
       await prisma.mentionSalle.create({
         data: {

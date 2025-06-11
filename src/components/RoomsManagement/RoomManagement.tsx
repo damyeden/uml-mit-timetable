@@ -9,9 +9,21 @@ interface RoomManagementProps {
 
 export async function RoomManagement({ mentionId }: RoomManagementProps) {
   const salles = await Salle.getAllSalles(Number(mentionId));
-  console.log(salles);
-  const equipements = await Equipment.getAllEquipments();
-  
+  const equipementsServer = await Equipment.getAllEquipments();
+  // Manually map to plain objects
+  const equipements = equipementsServer.map((equipment) => ({
+    equipmentId: equipment.getEquipmentId(),
+    equipmentType: equipment.equipmentType,
+    createdAt:
+      equipment.createdAt instanceof Date
+        ? equipment.createdAt.toISOString()
+        : equipment.createdAt,
+    updateAt:
+      equipment.updateAt instanceof Date
+        ? equipment.updateAt.toISOString()
+        : equipment.updateAt,
+    // Add any other properties you need
+  }));
 
   return (
     <div className="space-y-6">

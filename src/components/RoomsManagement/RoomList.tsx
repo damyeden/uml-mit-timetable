@@ -1,3 +1,4 @@
+"use state";
 import { Salle } from "@/src/lib/models/Salle";
 import RoomCard from "./RoomCard";
 

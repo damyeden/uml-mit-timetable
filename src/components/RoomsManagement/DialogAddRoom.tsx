@@ -46,9 +46,16 @@ import {
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 import { useToast } from "@/src/hooks/use-toast";
-import { Equipment } from "@/src/lib/models/Equipment";
 import { cn } from "@/src/lib/utils";
+import { addEquipment, addSalle } from "./action";
 import { type addRoomFormValues, addRoomSchema } from "./schema/addRoomSchema";
+
+type Equipment = {
+  equipmentId: number;
+  equipmentType: string;
+  createdAt: string | null | undefined;
+  updateAt: string | null | undefined;
+};
 
 interface DialogAddRoomProps {
   mentionId: number;
@@ -88,18 +95,11 @@ export default function DialogAddRoom({
         (eq) =>
           eq.equipmentType.toLowerCase() === newEquipment.trim().toLowerCase()
       );
-      /*
+
       if (!existingEquipment) {
         // Create a temporary equipment object with a negative ID for new items
 
-        const { equipmentId, equipmentType } = await addEquipment(newEquipment);
-
-        const newEquipmentObj = new Equipment(
-          equipmentId,
-          equipmentType,
-          null,
-          null
-        );
+        const newEquipmentObj = (await addEquipment(newEquipment)) as Equipment;
 
         const updatedList = [...equipmentsList, newEquipmentObj];
         setEquipmentsList(updatedList);
@@ -108,10 +108,10 @@ export default function DialogAddRoom({
         const currentEquipments = form.getValues("equipements") || [];
         form.setValue("equipements", [
           ...currentEquipments,
-          newEquipmentObj.getEquipmentId(),
+          newEquipmentObj.equipmentId,
         ]);
       }
-      */
+
       setNewEquipment("");
       setIsAddingEquipment(false);
     }
@@ -136,9 +136,7 @@ export default function DialogAddRoom({
   const getSelectedEquipmentNames = () => {
     return selectedEquipmentIds
       .map((id) => {
-        const equipment = equipmentsList.find(
-          (eq) => eq.getEquipmentId() === id
-        );
+        const equipment = equipmentsList.find((eq) => eq.equipmentId === id);
         return equipment ? equipment.equipmentType : "";
       })
       .filter((name) => name !== "");
@@ -152,10 +150,11 @@ export default function DialogAddRoom({
       const formData = {
         ...data,
         photo: data.photo && data.photo.length > 0 ? data.photo[0] : null,
+        equipments: data.equipements,
       };
 
       // Logic submit
-      // await addSalle(formData, mentionId);
+      await addSalle(formData, mentionId);
 
       toast({
         title: "Salle ajoutée",
@@ -269,17 +268,17 @@ export default function DialogAddRoom({
                             <CommandGroup>
                               {equipmentsList.map((equipment) => (
                                 <CommandItem
-                                  key={equipment.getEquipmentId()}
+                                  key={equipment.equipmentId}
                                   value={equipment.equipmentType}
                                   onSelect={() =>
-                                    toggleEquipment(equipment.getEquipmentId())
+                                    toggleEquipment(equipment.equipmentId)
                                   }
                                 >
                                   <Check
                                     className={cn(
                                       "mr-2 h-4 w-4",
                                       selectedEquipmentIds.includes(
-                                        equipment.getEquipmentId()
+                                        equipment.equipmentId
                                       )
                                         ? "opacity-100"
                                         : "opacity-0"
