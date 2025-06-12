@@ -2,7 +2,7 @@ import { Person } from "./Person";
 
 export class Student extends Person {
   private studentId: string;
-
+  
   public getstudentId(): string {
     return this.studentId;
   }

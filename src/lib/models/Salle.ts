@@ -63,7 +63,6 @@ export class Salle {
       },
     });
 
-    // Transformation des données en instances de Salle
     return salles.map((mentionSalle) => {
       const { salle } = mentionSalle;
       const equipments = salle.equipments.map(
@@ -144,33 +143,25 @@ export class Salle {
     try {
       let photoPath: string | null = null;
 
-      // Gestion de l'upload de photo si présente
       if (photo) {
-        // Convert File to buffer
         const bytes = await photo.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Create filename
         const timestamp = Date.now();
         const fileExtension = photo.name.split(".").pop();
         const filename = `${nom}-${timestamp}.${fileExtension}`;
 
-        // Save to public/uploads
         const uploadDir = join(process.cwd(), "public", "uploads");
         const filepath = join(uploadDir, filename);
 
-        // Ensure directory exists
         try {
           await mkdir(uploadDir, { recursive: true });
-        } catch (error) {
-          // Directory might already exist, continue
-        }
+        } catch (error) {}
 
         await writeFile(filepath, buffer);
         photoPath = `/uploads/${filename}`;
       }
 
-      // Création de la salle
       const newSalle = await prisma.salle.create({
         data: {
           nom,
@@ -179,7 +170,6 @@ export class Salle {
         },
       });
 
-      // Ajout des équipements si présents
       if (equipments && equipments.length > 0) {
         await Promise.all(
           equipments.map((equipmentId) =>
@@ -193,7 +183,6 @@ export class Salle {
         );
       }
 
-      // Association avec la mention
       await prisma.mentionSalle.create({
         data: {
           mentionId,
@@ -234,33 +223,25 @@ export class Salle {
     try {
       let photoPath: string | null = null;
 
-      // Gestion de l'upload de photo si présente
       if (photo) {
-        // Convert File to buffer
         const bytes = await photo.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Create filename
         const timestamp = Date.now();
         const fileExtension = photo.name.split(".").pop();
         const filename = `${nom}-${timestamp}.${fileExtension}`;
 
-        // Save to public/uploads
         const uploadDir = join(process.cwd(), "public", "uploads");
         const filepath = join(uploadDir, filename);
 
-        // Ensure directory exists
         try {
           await mkdir(uploadDir, { recursive: true });
-        } catch (error) {
-          // Directory might already exist, continue
-        }
+        } catch (error) {}
 
         await writeFile(filepath, buffer);
         photoPath = `/uploads/${filename}`;
       }
 
-      // Création de la salle
       const newSalle = await prisma.salle.create({
         data: {
           nom,
@@ -269,7 +250,6 @@ export class Salle {
         },
       });
 
-      // Ajout des équipements si présents
       if (equipments && equipments.length > 0) {
         await Promise.all(
           equipments.map((equipmentId) =>
@@ -283,7 +263,6 @@ export class Salle {
         );
       }
 
-      // Association avec la mention
       await prisma.mentionSalle.create({
         data: {
           mentionId,
@@ -309,8 +288,6 @@ export class Salle {
   }
   public static async deleteSalle(id: number): Promise<boolean> {
     try {
-      // Les relations MentionSalle et EquipmentSalle seront supprimées automatiquement
-      // grâce au onDelete: Cascade dans le schéma Prisma
       await prisma.salle.delete({
         where: { salleId: id },
       });

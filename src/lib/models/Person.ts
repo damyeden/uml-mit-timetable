@@ -5,7 +5,7 @@ export class Person {
   lastname: string;
   firstname?: string;
   userId: string;
-  
+
   constructor(
     personId: string,
     lastname: string,
@@ -25,7 +25,7 @@ export class Person {
     });
 
     if (!userWithPerson?.person) {
-      return null; // Pas de personne associé
+      return null;
     }
 
     const { person } = userWithPerson;

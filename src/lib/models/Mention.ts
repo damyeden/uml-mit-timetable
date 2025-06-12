@@ -1,4 +1,3 @@
-// Remove prisma import from here since this will be used client-side
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import prisma from "../prisma";
