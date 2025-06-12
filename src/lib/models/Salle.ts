@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
 import prisma from "../prisma";
 import { Equipment } from "./Equipment";
@@ -19,7 +19,6 @@ export class Salle {
   public createdAt?: Date;
   public updatedAt?: Date;
 
-  // Changed salleId type from string to number
   public equipments?: Equipment[];
 
   public photo?: string | null;
@@ -64,34 +63,29 @@ export class Salle {
       },
     });
 
-    return salles.map((mentionSalle: any) => {
-      const s = mentionSalle.salle;
+    // Transformation des données en instances de Salle
+    return salles.map((mentionSalle) => {
+      const { salle } = mentionSalle;
+      const equipments = salle.equipments.map(
+        (eq) =>
+          new Equipment(
+            eq.equipment.equipmentId,
+            eq.equipment.equipmentType,
+            eq.equipment.createdAt ?? undefined,
+            eq.equipment.updatedAt ?? undefined
+          )
+      );
 
       return new Salle(
-        s.salleId,
-        s.nom,
-        s.capacite,
-        s.latitude ?? undefined,
-        s.longitude ?? undefined,
-        s.createdAt ?? undefined,
-        s.updatedAt ?? undefined,
-        s.equipments
-          ? s.equipments.map(
-              (e: {
-                equipmentId: number;
-                equipmentType: string;
-                createdAt: Date | null;
-                updatedAt: Date | null;
-              }) =>
-                new Equipment(
-                  e.equipmentId,
-                  e.equipmentType,
-                  e.createdAt ?? null,
-                  e.updatedAt ?? null
-                )
-            )
-          : undefined,
-        s.photo ?? undefined
+        salle.salleId,
+        salle.nom,
+        salle.capacite,
+        salle.latitude ?? undefined,
+        salle.longitude ?? undefined,
+        salle.createdAt ?? undefined,
+        salle.updatedAt ?? undefined,
+        equipments,
+        salle.photo
       );
     });
   }
@@ -99,9 +93,26 @@ export class Salle {
   public static async getSalleById(id: number): Promise<Salle | null> {
     const salle = await prisma.salle.findUnique({
       where: { salleId: id },
+      include: {
+        equipments: {
+          include: {
+            equipment: true,
+          },
+        },
+      },
     });
 
     if (!salle) return null;
+
+    const equipments = salle.equipments.map(
+      (eq) =>
+        new Equipment(
+          eq.equipment.equipmentId,
+          eq.equipment.equipmentType,
+          eq.equipment.createdAt ?? undefined,
+          eq.equipment.updatedAt ?? undefined
+        )
+    );
 
     return new Salle(
       salle.salleId,
@@ -110,7 +121,9 @@ export class Salle {
       salle.latitude ?? undefined,
       salle.longitude ?? undefined,
       salle.createdAt ?? undefined,
-      salle.updatedAt ?? undefined
+      salle.updatedAt ?? undefined,
+      equipments,
+      salle.photo
     );
   }
 
@@ -129,76 +142,58 @@ export class Salle {
     console.log(equipments);
 
     try {
-      if (!photo) {
-        const newSalle = await prisma.salle.create({
-          data: {
-            nom,
-            capacite,
-          },
-        });
-        if (equipments) {
-          equipments.forEach(
-            async (e) =>
-              await prisma.equipmentSalle.create({
-                data: {
-                  equipmentId: e,
-                  salleId: newSalle.salleId,
-                },
-              })
-          );
+      let photoPath: string | null = null;
+
+      // Gestion de l'upload de photo si présente
+      if (photo) {
+        // Convert File to buffer
+        const bytes = await photo.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        // Create filename
+        const timestamp = Date.now();
+        const fileExtension = photo.name.split(".").pop();
+        const filename = `${nom}-${timestamp}.${fileExtension}`;
+
+        // Save to public/uploads
+        const uploadDir = join(process.cwd(), "public", "uploads");
+        const filepath = join(uploadDir, filename);
+
+        // Ensure directory exists
+        try {
+          await mkdir(uploadDir, { recursive: true });
+        } catch (error) {
+          // Directory might already exist, continue
         }
-        await prisma.mentionSalle.create({
-          data: {
-            mentionId,
-            salleId: newSalle.salleId,
-          },
-        });
 
-        return {
-          success: true,
-        };
+        await writeFile(filepath, buffer);
+        photoPath = `/uploads/${filename}`;
       }
 
-      // Convert File to buffer
-      const bytes = await photo.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      // Create filename
-      const timestamp = Date.now();
-      const fileExtension = photo.name.split(".").pop();
-      const filename = `${nom}-${timestamp}.${fileExtension}`;
-
-      // Save to public/uploads
-      const uploadDir = join(process.cwd(), "public", "uploads");
-      const filepath = join(uploadDir, filename);
-
-      // Ensure directory exists
-      const fs = require("fs");
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
-      await writeFile(filepath, buffer);
-
+      // Création de la salle
       const newSalle = await prisma.salle.create({
         data: {
           nom,
           capacite,
-          photo: `/uploads/${filename}`,
+          ...(photoPath && { photo: photoPath }),
         },
       });
-      if (equipments) {
-        equipments.forEach(
-          async (e) =>
-            await prisma.equipmentSalle.create({
+
+      // Ajout des équipements si présents
+      if (equipments && equipments.length > 0) {
+        await Promise.all(
+          equipments.map((equipmentId) =>
+            prisma.equipmentSalle.create({
               data: {
-                equipmentId: e,
+                equipmentId,
                 salleId: newSalle.salleId,
               },
             })
+          )
         );
       }
 
+      // Association avec la mention
       await prisma.mentionSalle.create({
         data: {
           mentionId,
@@ -208,15 +203,16 @@ export class Salle {
 
       return {
         success: true,
-        filename,
-        path: `/uploads/${filename}`,
+        ...(photoPath && {
+          filename: photoPath.split("/").pop(),
+          path: photoPath,
+        }),
       };
     } catch (error) {
-      console.error("Error saving mention:", error);
+      console.error("Error saving salle:", error);
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : "Failed to save mention",
+        error: error instanceof Error ? error.message : "Failed to save salle",
       };
     }
   }
@@ -243,6 +239,8 @@ export class Salle {
 
   public static async deleteSalle(id: number): Promise<boolean> {
     try {
+      // Les relations MentionSalle et EquipmentSalle seront supprimées automatiquement
+      // grâce au onDelete: Cascade dans le schéma Prisma
       await prisma.salle.delete({
         where: { salleId: id },
       });
