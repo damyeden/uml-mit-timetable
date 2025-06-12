@@ -100,10 +100,10 @@ export default function RoomCard({ salle }: RoomCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="flex justify-end gap-2 pt-2">
+      <CardFooter className="flex justify-start gap-2 pt-2">
         {/*  
               <DialogModifyRoom room={room} />
-              */}
+        */}
         <DialogDeleteRoom salleId={salle.getSalleId()} />
       </CardFooter>
     </Card>

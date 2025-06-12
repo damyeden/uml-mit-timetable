@@ -218,25 +218,95 @@ export class Salle {
   }
 
   public static async updateSalle(
-    id: number,
-    data: Partial<{
+    formData: {
       nom: string;
       capacite: number;
-      latitude?: number;
-      longitude?: number;
-    }>
-  ): Promise<boolean> {
+      photo: File | null;
+      equipments?: number[] | null;
+    },
+    mentionId: number
+  ) {
+    mentionId = Number(mentionId);
+    const { nom, capacite, photo, equipments } = formData;
+
+    console.log(equipments);
+
     try {
-      await prisma.salle.update({
-        where: { salleId: id },
-        data,
+      let photoPath: string | null = null;
+
+      // Gestion de l'upload de photo si présente
+      if (photo) {
+        // Convert File to buffer
+        const bytes = await photo.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        // Create filename
+        const timestamp = Date.now();
+        const fileExtension = photo.name.split(".").pop();
+        const filename = `${nom}-${timestamp}.${fileExtension}`;
+
+        // Save to public/uploads
+        const uploadDir = join(process.cwd(), "public", "uploads");
+        const filepath = join(uploadDir, filename);
+
+        // Ensure directory exists
+        try {
+          await mkdir(uploadDir, { recursive: true });
+        } catch (error) {
+          // Directory might already exist, continue
+        }
+
+        await writeFile(filepath, buffer);
+        photoPath = `/uploads/${filename}`;
+      }
+
+      // Création de la salle
+      const newSalle = await prisma.salle.create({
+        data: {
+          nom,
+          capacite,
+          ...(photoPath && { photo: photoPath }),
+        },
       });
-      return true;
-    } catch {
-      return false;
+
+      // Ajout des équipements si présents
+      if (equipments && equipments.length > 0) {
+        await Promise.all(
+          equipments.map((equipmentId) =>
+            prisma.equipmentSalle.create({
+              data: {
+                equipmentId,
+                salleId: newSalle.salleId,
+              },
+            })
+          )
+        );
+      }
+
+      // Association avec la mention
+      await prisma.mentionSalle.create({
+        data: {
+          mentionId,
+          salleId: newSalle.salleId,
+        },
+      });
+
+      return {
+        success: true,
+        ...(photoPath && {
+          filename: photoPath.split("/").pop(),
+          path: photoPath,
+        }),
+      };
+    } catch (error) {
+      console.error("failed to update salle:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Failed to update salle",
+      };
     }
   }
-
   public static async deleteSalle(id: number): Promise<boolean> {
     try {
       // Les relations MentionSalle et EquipmentSalle seront supprimées automatiquement

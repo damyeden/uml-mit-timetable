@@ -25,16 +25,10 @@ export default function DialogDeleteRoom({ salleId }: DialogDeleteRoomProps) {
     setIsDeleting(true);
 
     try {
-      // Simulation d'un appel API
-      //await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Appel de la fonction de callback avec l'ID de la room
       await deleteSalle(salleId);
-
-      //console.log(`Suppression de la salle avec l'ID: ${room.id}`);
-
-      // Fermer le dialog après suppression
       setIsDialogOpen(false);
+      // Refresh the page after deletion
+      window.location.reload();
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
     } finally {

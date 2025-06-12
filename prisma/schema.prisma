@@ -282,3 +282,20 @@ model Ecue {
 
   @@map("ecue")
 }
+
+model TimeSlot {
+  timeSlotId Int       @id @default(autoincrement())
+  startTime  DateTime
+  endTime    DateTime
+  dayName    DayOfWeek
+}
+
+enum DayOfWeek {
+  LUNDI
+  MARDI
+  MERCREDI
+  JEUDI
+  VENDREDI
+  SAMEDI
+  DIMANCHE
+}
