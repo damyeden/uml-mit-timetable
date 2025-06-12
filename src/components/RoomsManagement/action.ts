@@ -16,7 +16,19 @@ export async function addSalle(
     //revalidatePath("");
   } catch (error) {
     console.error("Erreur lors de la suppression:", error);
-    throw new Error("Impossible de supprimer la mention");
+    throw new Error("Impossible d'ajouter la salle");
+  }
+}
+
+
+
+export async function deleteSalle(salleId:number) { 
+  try {
+    await Salle.deleteSalle(salleId);
+    //revalidatePath("");
+  } catch (error) {
+    console.error("Erreur lors de la suppression:", error);
+    throw new Error("Impossible de supprimer la salle");
   }
 }
 
@@ -33,3 +45,4 @@ export async function addEquipment(equipmentType: string) {
     throw new Error("Impossible de supprimer la mention");
   }
 }
+

@@ -9,6 +9,7 @@ import {
 import { Salle } from "@/src/lib/models/Salle";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
+import DialogDeleteRoom from "./DialogDeleteRoom";
 const getStatusLabel = (status: string) => {
   switch (status) {
     case "available":
@@ -102,8 +103,8 @@ export default function RoomCard({ salle }: RoomCardProps) {
       <CardFooter className="flex justify-end gap-2 pt-2">
         {/*  
               <DialogModifyRoom room={room} />
-              <DialogDeleteRoom room={room} />
-                */}
+              */}
+        <DialogDeleteRoom salleId={salle.getSalleId()} />
       </CardFooter>
     </Card>
   );

@@ -11,12 +11,13 @@ import {
 } from "@/src/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import { deleteSalle } from "./action";
 
 interface DialogDeleteRoomProps {
-  room: Room;
+  salleId: number;
 }
 
-export default function DialogDeleteRoom({ room }: DialogDeleteRoomProps) {
+export default function DialogDeleteRoom({ salleId }: DialogDeleteRoomProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -25,11 +26,12 @@ export default function DialogDeleteRoom({ room }: DialogDeleteRoomProps) {
 
     try {
       // Simulation d'un appel API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      //await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Appel de la fonction de callback avec l'ID de la room
+      await deleteSalle(salleId);
 
-      console.log(`Suppression de la salle avec l'ID: ${room.id}`);
+      //console.log(`Suppression de la salle avec l'ID: ${room.id}`);
 
       // Fermer le dialog après suppression
       setIsDialogOpen(false);
