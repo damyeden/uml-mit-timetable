@@ -7,13 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Au {
+model AnneeUniversitaire {
   auId Int @id @default(autoincrement())
 
   au String
 
-  debut DateTime?
-  fin   DateTime?
+  startDate DateTime?
+  endDate   DateTime?
 
   debutSemestrePair DateTime?
   finSemestrePair   DateTime?
@@ -21,6 +21,7 @@ model Au {
   debutSemestreInpair DateTime?
   finSemestreInpair   DateTime?
   Inscription         Inscription[]
+  creneauxProfesseur CreneauLibre[]
 
   @@map("annnee_universitaire")
 }
@@ -126,6 +127,8 @@ model Professor {
 
   person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
   personId String @unique
+
+  creneau CreneauLibre[]
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
@@ -253,7 +256,7 @@ model Inscription {
   parcours   Parcours @relation(fields: [parcoursId], references: [parcoursId], onDelete: Cascade)
   parcoursId Int      @unique
 
-  au   Au  @relation(fields: [auId], references: [auId], onDelete: Cascade)
+  au   AnneeUniversitaire @relation(fields: [auId], references: [auId], onDelete: Cascade)
   auId Int
 
   @@index(mentionId)
@@ -283,11 +286,29 @@ model Ecue {
   @@map("ecue")
 }
 
-model TimeSlot {
-  timeSlotId Int       @id @default(autoincrement())
+model CreneauLibre {
+  creneauLibreId Int @id @default(autoincrement())
+
+  creneau Creneau @relation(fields: [creneauId], references: [creneauId], onDelete: Cascade)
+  creneauId Int
+
+  professor Professor @relation(fields: [professorId], references: [professorId], onDelete: Cascade)
+  professorId String
+
+  au AnneeUniversitaire @relation(fields: [auId], references: [auId], onDelete: Cascade)
+  auId Int
+
+
+  @@map("creneau_libre")
+}
+
+model Creneau {
+  creneauId Int       @id @default(autoincrement())
   startTime  DateTime
   endTime    DateTime
   dayName    DayOfWeek
+
+  professor CreneauLibre[]
 }
 
 enum DayOfWeek {
