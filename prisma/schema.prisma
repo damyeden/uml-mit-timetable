@@ -88,8 +88,8 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
 
   @@map("verification")
 }
@@ -115,8 +115,8 @@ model Admin {
   person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
   personId String @unique
 
-  createdAt DateTime?
-  updatedAt DateTime?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 
   @@map("admin")
 }
@@ -127,8 +127,8 @@ model Professor {
   person   Person @relation(fields: [personId], references: [personId], onDelete: Cascade)
   personId String @unique
 
-  createdAt DateTime?
-  updatedAt DateTime?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 
   @@map("professor")
 }
@@ -143,8 +143,8 @@ model Mention {
   salles      MentionSalle[]
   inscription Inscription[]
 
-  createdAt DateTime?
-  updatedAt DateTime?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 
   @@map("mention")
 }
@@ -194,8 +194,8 @@ model Salle {
   equipments EquipmentSalle[]
   mentions   MentionSalle[]
 
-  createdAt DateTime?
-  updatedAt DateTime?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 
   @@map("salle")
 }
@@ -218,8 +218,8 @@ model Equipment {
 
   salles EquipmentSalle[]
 
-  createdAt DateTime?
-  updatedAt DateTime?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 
   @@map("equipements")
 }
