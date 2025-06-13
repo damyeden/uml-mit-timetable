@@ -21,7 +21,8 @@ model AnneeUniversitaire {
   debutSemestreInpair DateTime?
   finSemestreInpair   DateTime?
   Inscription         Inscription[]
-  creneauxProfesseur CreneauLibre[]
+  creneauxProfesseur  CreneauLibre[]
+  ecueProfesseur      Enseignement[]
 
   @@map("annnee_universitaire")
 }
@@ -129,6 +130,7 @@ model Professor {
   personId String @unique
 
   creneau CreneauLibre[]
+  ecue    Enseignement[]
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
@@ -145,6 +147,7 @@ model Mention {
 
   salles      MentionSalle[]
   inscription Inscription[]
+  ecueParcours Matiere[]
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
@@ -156,6 +159,7 @@ model Niveau {
   niveauId Int    @id @default(autoincrement())
   intitule String
 
+  semestre    Semestre[]
   inscription Inscription[]
 }
 
@@ -167,6 +171,7 @@ model Parcours {
   rgt Int
 
   inscription Inscription[]
+  ecueMention Matiere[]
 
   @@index([lft])
   @@index([rgt])
@@ -280,6 +285,9 @@ model Ecue {
   credits   Int
   chapitres String[]
 
+  professor Enseignement[]
+  matiereMention Matiere[]
+
   ue   UE  @relation(fields: [ueId], references: [ueId], onDelete: Cascade)
   ueId Int
 
@@ -289,24 +297,23 @@ model Ecue {
 model CreneauLibre {
   creneauLibreId Int @id @default(autoincrement())
 
-  creneau Creneau @relation(fields: [creneauId], references: [creneauId], onDelete: Cascade)
+  creneau   Creneau @relation(fields: [creneauId], references: [creneauId], onDelete: Cascade)
   creneauId Int
 
-  professor Professor @relation(fields: [professorId], references: [professorId], onDelete: Cascade)
+  professor   Professor @relation(fields: [professorId], references: [professorId], onDelete: Cascade)
   professorId String
 
-  au AnneeUniversitaire @relation(fields: [auId], references: [auId], onDelete: Cascade)
+  au   AnneeUniversitaire @relation(fields: [auId], references: [auId], onDelete: Cascade)
   auId Int
-
 
   @@map("creneau_libre")
 }
 
 model Creneau {
   creneauId Int       @id @default(autoincrement())
-  startTime  DateTime
-  endTime    DateTime
-  dayName    DayOfWeek
+  startTime DateTime
+  endTime   DateTime
+  dayName   DayOfWeek
 
   professor CreneauLibre[]
 }
@@ -321,3 +328,48 @@ enum DayOfWeek {
   DIMANCHE
 }
 
+model Enseignement {
+  enseignementId Int @id @default(autoincrement())
+
+  professor   Professor @relation(fields: [professorId], references: [professorId], onDelete: Cascade)
+  professorId String
+
+  ecue   Ecue @relation(fields: [ecueId], references: [ecueId], onDelete: Cascade)
+  ecueId Int
+
+  au   AnneeUniversitaire @relation(fields: [auId], references: [auId], onDelete: Cascade)
+  auId Int
+
+  @@index(professorId)
+  @@index(ecueId)
+  @@map("enseignement")
+}
+
+model Semestre {
+  semestreId Int       @id @default(autoincrement())
+  nom        String
+  startDate  DateTime?
+  endDate    DateTime?
+
+  niveau   Niveau @relation(fields: [niveauId], references: [niveauId], onDelete: Cascade)
+  niveauId Int
+
+  @@map("semestre")
+}
+
+model Matiere {
+  matiereId Int @id @default(autoincrement())
+
+  mention Mention @relation(fields: [mentionId], references: [mentionId], onDelete: Cascade)
+  mentionId Int
+
+  ecue Ecue @relation(fields: [ecueId], references: [ecueId], onDelete: Cascade)
+  ecueId Int
+
+  parcours Parcours @relation(fields: [parcoursId], references: [parcoursId], onDelete: Cascade)
+  parcoursId Int
+
+  @@index(parcoursId)
+
+  @@map("matiere")
+}
