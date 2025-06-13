@@ -81,11 +81,16 @@ export default function Event({ event, userRole }: EventProps) {
           className={`absolute left-1 right-1 p-2 rounded-md border-l-4 ${getEventColor(event.type)} cursor-pointer hover:shadow-md transition-shadow group`}
           style={position}
         >
-          <div className="text-xs font-medium mb-1">{event.title}</div>
+          <div className="text-xs font-extrabold mb-1">{event.title}</div>
+          <div className="text-xs font-medium space-y-1">{event.ecue}</div>
           <div className="text-xs opacity-75 space-y-1">
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {event.startTime} - {event.endTime}
+            </div>
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span>{event.professor}</span>
             </div>
             <div className="flex items-center gap-1 truncate">
               <MapPin className="h-3 w-3 flex-shrink-0" />

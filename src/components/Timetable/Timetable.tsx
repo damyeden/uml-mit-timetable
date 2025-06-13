@@ -10,12 +10,14 @@ import {
 } from "@/src/components/ui/card";
 import { Calendar } from "lucide-react";
 import Legend from "./Legend";
+
 import TimeTableFilter from "./TimeTableFilter";
 import TimeTableInterface from "./TimetableInterface/TimeTableInterface";
 
 export interface ScheduleEvent {
   id: string;
   title: string;
+  ecue: string;
   professor: string;
   room: string;
   startTime: string;
@@ -28,15 +30,69 @@ export interface ScheduleEvent {
 
 interface ScheduleViewerProps {
   userRole: Role;
+  mentionId: number;
 }
 
-export function TimeTable({ userRole }: ScheduleViewerProps) {
+export function TimeTable({ userRole, mentionId }: ScheduleViewerProps) {
   const events: ScheduleEvent[] = [
     {
       id: "1",
-      title: "Programmation Orientée Objet",
-      professor: "Dr. Marie Dubois",
-      room: "Salle A101",
+      title: "Prototypage numérique",
+      ecue: "Conception et modelisation",
+      professor: "Mr Tahiry",
+      room: "Grande Salle MISA",
+      startTime: "13:00",
+      endTime: "16:00",
+      day: 4,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "2",
+      title: "Prototypage numérique",
+      ecue: "Architectures",
+      professor: "Mr Fenohery",
+      room: "Grande Salle MISA",
+      startTime: "13:00",
+      endTime: "16:00",
+      day: 3,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "3",
+      title: "Mathématique du numérique",
+      ecue: "Méthodes numériques",
+      professor: "Mr Patrick",
+      room: "R234",
+      startTime: "09:00",
+      endTime: "12:00",
+      day: 3,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "4",
+      title: "Mathématique du numérique",
+      ecue: "Méthodes numériques",
+      professor: "Mr Patrick",
+      room: "R234",
+      startTime: "09:00",
+      endTime: "12:00",
+      day: 3,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "5",
+      title: "Mathématique du numérique",
+      ecue: "Applications mathématiques",
+      professor: "Mr Tahiry",
+      room: "Grande Salle MISA",
       startTime: "08:00",
       endTime: "10:00",
       day: 1,
@@ -45,64 +101,82 @@ export function TimeTable({ userRole }: ScheduleViewerProps) {
       date: "3 Mars 2025",
     },
     {
-      id: "2",
-      title: "TP Base de Données",
-      professor: "Dr. Marie Dubois",
-      room: "Salle B205",
-      startTime: "10:15",
-      endTime: "12:15",
-      day: 1,
-      type: "tp",
-      ue: "INFO302",
+      id: "6",
+      title: "Conduite de projet informatique",
+      ecue: "Applications mathématiques",
+      professor: "Mme Ando",
+      room: "Grande Salle MISA",
+      startTime: "09:00",
+      endTime: "11:00",
+      day: 2,
+      type: "cours",
+      ue: "INFO301",
       date: "3 Mars 2025",
     },
     {
-      id: "3",
-      title: "Analyse Mathématique",
-      professor: "Prof. Jean Martin",
-      room: "Amphithéâtre C",
-      startTime: "14:00",
-      endTime: "16:00",
-      day: 2,
-      type: "cours",
-      ue: "MATH201",
-      date: "4 Mars 2025",
-    },
-    {
-      id: "4",
-      title: "TD Mécanique",
-      professor: "Dr. Sophie Laurent",
-      room: "Salle A102",
+      id: "7",
+      title: "Probabilités et Statistiques",
+      ecue: "",
+      professor: "Mr Hanjarivo",
+      room: "Grande Salle MISA",
       startTime: "08:00",
-      endTime: "10:00",
-      day: 3,
-      type: "td",
-      ue: "PHYS401",
-      date: "5 Mars 2025",
-    },
-    {
-      id: "5",
-      title: "Programmation Web",
-      professor: "Dr. Marie Dubois",
-      room: "Salle B205",
-      startTime: "14:00",
-      endTime: "17:00",
-      day: 4,
-      type: "tp",
-      ue: "INFO303",
-      date: "6 Mars 2025",
-    },
-    {
-      id: "6",
-      title: "Algorithmique Avancée",
-      professor: "Dr. Pierre Dupont",
-      room: "Salle C103",
-      startTime: "10:00",
       endTime: "12:00",
       day: 5,
       type: "cours",
-      ue: "INFO304",
-      date: "7 Mars 2025",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "8",
+      title: "Gestion d'entreprise",
+      ecue: "Anglais",
+      professor: "Mr Dodier",
+      room: "Sous sol MISA",
+      startTime: "08:00",
+      endTime: "10:00",
+      day: 4,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "9",
+      title: "Gestion d'entreprise",
+      ecue: "Administration numérique",
+      professor: "Mme Ando",
+      room: "Sous sol MISA",
+      startTime: "10:00",
+      endTime: "12:00",
+      day: 4,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "10",
+      title: "Gestion d'entreprise",
+      ecue: "Communication",
+      professor: "Mr Anselme",
+      room: "Grande Salle MISA",
+      startTime: "10:00",
+      endTime: "12:00",
+      day: 1,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
+    },
+    {
+      id: "11",
+      title: "Base de données",
+      ecue: "",
+      professor: "Mr Haga/Mr Hasinarivo",
+      room: "Grande Salle MISA",
+      startTime: "13:00",
+      endTime: "18:00",
+      day: 1,
+      type: "cours",
+      ue: "INFO301",
+      date: "3 Mars 2025",
     },
   ];
 
@@ -143,16 +217,13 @@ export function TimeTable({ userRole }: ScheduleViewerProps) {
         <TimeTableFilter userRole={userRole} />
       </div>
 
-      {/* Legend */}
-      <Legend />
-
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                {"Semaine du 3-9 Mars 2025"}
+                {"Semestre en cours (S5)"}
               </CardTitle>
             </div>
           </div>
@@ -167,6 +238,8 @@ export function TimeTable({ userRole }: ScheduleViewerProps) {
           />
         </CardContent>
       </Card>
+      {/* Legend */}
+      <Legend />
     </div>
   );
 }
