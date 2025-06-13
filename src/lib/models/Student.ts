@@ -1,8 +1,10 @@
+import { Inscription } from "./Inscription";
 import { Person } from "./Person";
 
 export class Student extends Person {
   private studentId: string;
-  
+  public inscriptions?: Inscription[] = [];
+
   public getstudentId(): string {
     return this.studentId;
   }
@@ -20,5 +22,9 @@ export class Student extends Person {
   ) {
     super(personId, lastname, userId, firstname);
     this.studentId = studentId;
+  }
+
+  public addInscription(inscription: Inscription) {
+    this.inscriptions?.push(inscription);
   }
 }
